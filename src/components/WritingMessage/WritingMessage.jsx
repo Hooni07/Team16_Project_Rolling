@@ -1,7 +1,4 @@
-import styled from "styled-components";
 import WritingForm from "./WritingForm";
-
-
 
 const WritingMessage = (props) => {
   return (
