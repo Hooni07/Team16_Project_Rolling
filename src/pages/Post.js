@@ -13,7 +13,8 @@ function Post() {
   const [selectColor, setSelectColor] = useState('beige');
   const [background, setBackground] = useState([]);
   const [selectImage, setSelectImage] = useState(null);
-  const [inputUser, setInputUser] = useState(null);
+  const [inputUser, setInputUser] = useState('');
+  const [inputError, setInputError] = useState(null);
   const [btnDisable, setBtnDisable] = useState(true);
 
   const handleImageLoad = async () => {
@@ -21,7 +22,6 @@ function Post() {
       const response = await getAPI('/background-images/');
       const result = response.imageUrls;
       setBackground(result);
-      setSelectImage(background[0]);
     } catch (error) {
       console.error(error);
     }
@@ -35,6 +35,11 @@ function Post() {
     const { value } = e.target;
     setInputUser(value);
     setBtnDisable(value.trim() === '');
+    setInputError(value.trim() === '');
+  };
+
+  const handleBlur = () => {
+    setInputError(inputUser.trim() === '');
   };
 
   const toggleHandler = () => {
@@ -63,7 +68,10 @@ function Post() {
           placeholder="받는 사람 이름을 입력해 주세요"
           value={inputUser}
           onChange={handleInput}
+          onBlur={handleBlur}
+          error={inputError}
         />
+        {inputError && <ErrorMessage>값을 입력해 주세요.</ErrorMessage>}
       </PostInput>
       <SelectSection>
         <SelectTitle>배경화면을 선택해 주세요.</SelectTitle>
@@ -195,6 +203,10 @@ const PostSection = styled.div`
   margin: 57px auto;
   width: 720px;
   text-align: left;
+
+  @media (max-width: 768px) {
+    width: 320px;
+  }
 `;
 
 const PostInput = styled.div`
@@ -223,6 +235,7 @@ const Input = styled.input`
   gap: 10px;
   border-radius: 8px;
   border: 1px solid var(--gray300);
+  border: ${(props) => props.error && '2px solid var(--error)'};
   backgournd: var(--white);
 
   &::placeholder {
@@ -234,6 +247,15 @@ const Input = styled.input`
     line-height: 26px;
     letter-spacing: -0.16px;
   }
+
+  @media (max-width: 768px) {
+    width: 320px;
+  }
+`;
+
+const ErrorMessage = styled.div`
+  color: red;
+  font-size: 12px;
 `;
 
 const SelectSection = styled.div`
@@ -243,6 +265,10 @@ const SelectSection = styled.div`
   align-items: flex-start;
   gap: 4px;
   margin-top: 50px;
+
+  @media (max-width: 768px) {
+    width: 320px;
+  }
 `;
 
 const SelectTitle = styled.p`
@@ -321,6 +347,13 @@ const Select = styled.div`
   justify-content: space-between;
   margin-top: 45px;
   margin-bottom: 45px;
+  flex-wrap: wrap;
+  flex-direction: row;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    width: 320px;
+  }
 `;
 
 const CheckIcon = styled.div`
@@ -348,6 +381,12 @@ const ColorOption = styled.div`
   border-radius: 16px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    width: 154px;
+    height: 154px;
+    margin: 12px 0;
+  }
 `;
 
 const ImageOption = styled.div`
@@ -360,6 +399,12 @@ const ImageOption = styled.div`
   border-radius: 16px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   cursor: pointer;
+
+  @media (max-width: 768px) {
+    width: 154px;
+    height: 154px;
+    margin: 12px 0;
+  }
 `;
 
 const Button = styled.button`
@@ -383,6 +428,10 @@ const Button = styled.button`
   letter-spacing: -0.18px;
 
   cursor: ${({ disabled }) => disabled && 'not-allowed'};
+
+  @media (max-width: 768px) {
+    width: 320px;
+  }
 `;
 
 export default Post;
