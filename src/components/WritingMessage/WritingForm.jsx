@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Editor from '@toast-ui/editor';
 import styled from 'styled-components';
+import '@toast-ui/editor/dist/toastui-editor.css';
+import '@toast-ui/editor/dist/i18n/ko-kr';
 // import exampleProfile1 from '../../../public/img/image43.svg';
 // import exampleProfile2 from '../../../public/img/image44.svg';
 
@@ -80,16 +82,16 @@ const RelationSelect = styled.select`
   border: 1px solid var(--gray300);
 `;
 
-// const TextAreaDevice = styled.div`
-//   display: flex;
-//   width: 720px;
-//   height: 260px;
-//   padding: 1px 1px 16px 1px;
-//   justify-content: center;
-//   align-items: center;
-//   border-radius: 8px;
-//   border: 1px solid var(--gray300);
-// `;
+const TextAreaDevice = styled.div`
+  display: flex;
+  width: 720px;
+  height: 260px;
+  padding: 1px 1px 16px 1px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  border: 1px solid var(--gray300);
+`;
 
 // const TextAreaTools = styled.div`
 //   width: 718px;
@@ -154,7 +156,6 @@ function WritingForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(profile);
   };
 
   const handleFontChange = (fonts) => {
@@ -206,10 +207,10 @@ function WritingForm() {
           </RelationSelect>
         </FormSubject>
 
-        {/* <FormSubject>
+        <FormSubject>
           <IndexMessage>내용을 입력해 주세요</IndexMessage>
           <TextAreaDevice>
-            <TextAreaTools>
+            {/* <TextAreaTools>
               <HandWritingTools>
                 <FontStyleTools>
                   <button type="button" onClick={handleToggleBold}>
@@ -242,9 +243,19 @@ function WritingForm() {
                 fontStyle: italic ? 'italic' : 'normal',
                 textDecoration: underline ? 'underline' : 'none',
               }}
+            /> */}
+
+            <Editor
+              initialValue="편지 내용을 입력해 주세요!"
+              previewStyle="vertical"
+              height="243px"
+              width="718px"
+              initialEditType="wysiwyg"
+              useCommandShortcut={false}
+              language="ko-kr"
             />
           </TextAreaDevice>
-        </FormSubject> */}
+        </FormSubject>
 
         <FormSubject>
           <IndexMessage>폰트 선택</IndexMessage>
