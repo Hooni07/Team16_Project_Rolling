@@ -178,9 +178,6 @@ function Post() {
           </ImageOption>
         </Select>
       )}
-      <h2>
-        color:{selectColor}, img:{selectImage}
-      </h2>
       <Button onClick={handleSubmit} disabled={btnDisable}>
         생성하기
       </Button>
@@ -191,7 +188,7 @@ function Post() {
 const PostSection = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: left;
   background: var(--white);
   margin: 57px auto;
@@ -270,7 +267,7 @@ const SelectContent = styled.p`
   letter-spacing: -0.16px;
 `;
 
-const SelectToggle = styled.span`
+const SelectToggle = styled.div`
   display: inline-flex;
   align-items: flex-start;
   margin-top: 24px;
@@ -319,6 +316,7 @@ const OffButton = styled(BtnCommon)`
 
 const Select = styled.div`
   display: flex;
+  justify-content: space-between;
   margin-top: 45px;
   margin-bottom: 45px;
 `;
@@ -354,16 +352,15 @@ const ImageOption = styled.div`
   position: relative;
   width: 168px;
   height: 168px;
-  background-image: url(${(props) => props.image})
-  );
-  background-size: cover;
+  background: url(${(props) => props.image}) lightgray 50% / cover no-repeat;
+
   margin: 5px;
   border-radius: 16px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   cursor: pointer;
 
   &:after {
-
+    background: lightgray 50%;
   }
 `;
 
@@ -374,7 +371,6 @@ const Button = styled.button`
   justify-content: center;
   align-items: center;
   gap: 10px;
-  margin: 24px;
   border-radius: 12px;
   background: var(--${({ disabled }) => (disabled ? 'gray300' : 'purple600')});
 
