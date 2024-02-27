@@ -1,20 +1,68 @@
 import styled from 'styled-components';
-import { useState } from 'react';
-import ColorSelect from '../components/post/ColorSelect';
-import ImageSelect from '../components/post/ImageSelect';
+import { useEffect, useState } from 'react';
+
+async function getAPI(query) {
+  const response = await fetch(`https://rolling-api.vercel.app${query}`);
+  const body = await response.json();
+
+  return body;
+}
 
 function Post() {
   const [isColor, setIsColor] = useState(true);
+  const [selectColor, setSelectColor] = useState(null);
+  const [background, setBackground] = useState([]);
+  const [selectImage, setSelectImage] = useState(null);
+  const [inputUser, setInputUser] = useState(null);
+  const [btnDisable, setBtnDisable] = useState(true);
+
+  const handleImageLoad = async () => {
+    try {
+      const response = await getAPI('/background-images/');
+      const result = response.imageUrls;
+      setBackground(result);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    handleImageLoad();
+  }, []);
+
+  const handleInput = (e) => {
+    const { value } = e.target;
+    setInputUser(value);
+    setBtnDisable(value.trim() === '');
+  };
 
   const toggleHandler = () => {
     setIsColor(!isColor);
+  };
+
+  const handleColorChange = (color) => {
+    setSelectColor(color);
+    setSelectImage(null);
+  };
+
+  const handleImageChange = (image) => {
+    setSelectImage(image);
+    setSelectColor(null);
+  };
+
+  const handleSubmit = () => {
+    console.log('버튼 활성화');
   };
 
   return (
     <PostSection>
       <PostInput>
         <InputTitle>To.</InputTitle>
-        <Input placeholder="받는 사람 이름을 입력해 주세요" />
+        <Input
+          placeholder="받는 사람 이름을 입력해 주세요"
+          value={inputUser}
+          onChange={handleInput}
+        />
       </PostInput>
       <SelectSection>
         <SelectTitle>배경화면을 선택해 주세요.</SelectTitle>
@@ -35,8 +83,107 @@ function Post() {
           </>
         )}
       </SelectToggle>
-      {isColor ? <ColorSelect /> : <ImageSelect />}
-      <Button>생성하기</Button>
+      {isColor ? (
+        <Select>
+          <ColorOption
+            color="orange"
+            onClick={() => handleColorChange('beige')}
+            selected={selectColor === 'beige'}
+          >
+            {selectColor === 'beige' && (
+              <CheckIcon>
+                <img src="img/check.svg" alt="선택" />
+              </CheckIcon>
+            )}
+          </ColorOption>
+          <ColorOption
+            color="purple"
+            onClick={() => handleColorChange('purple')}
+            selected={selectColor === 'purple'}
+          >
+            {selectColor === 'purple' && (
+              <CheckIcon>
+                <img src="img/check.svg" alt="선택" />
+              </CheckIcon>
+            )}
+          </ColorOption>
+          <ColorOption
+            color="blue"
+            onClick={() => handleColorChange('blue')}
+            selected={selectColor === 'blue'}
+          >
+            {selectColor === 'blue' && (
+              <CheckIcon>
+                <img src="img/check.svg" alt="선택" />
+              </CheckIcon>
+            )}
+          </ColorOption>
+          <ColorOption
+            color="green"
+            onClick={() => handleColorChange('green')}
+            selected={selectColor === 'green'}
+          >
+            {selectColor === 'green' && (
+              <CheckIcon>
+                <img src="img/check.svg" alt="선택" />
+              </CheckIcon>
+            )}
+          </ColorOption>
+        </Select>
+      ) : (
+        <Select>
+          <ImageOption
+            image={background[0]}
+            onClick={() => handleImageChange(background[0])}
+            selected={selectImage === background[0]}
+          >
+            {selectImage === background[0] && (
+              <CheckIcon>
+                <img src="img/check.svg" alt="선택" />
+              </CheckIcon>
+            )}
+          </ImageOption>
+          <ImageOption
+            image={background[1]}
+            onClick={() => handleImageChange(background[1])}
+            selected={selectImage === background[1]}
+          >
+            {selectImage === background[1] && (
+              <CheckIcon>
+                <img src="img/check.svg" alt="선택" />
+              </CheckIcon>
+            )}
+          </ImageOption>
+          <ImageOption
+            image={background[2]}
+            onClick={() => handleImageChange(background[2])}
+            selected={selectImage === background[2]}
+          >
+            {selectImage === background[2] && (
+              <CheckIcon>
+                <img src="img/check.svg" alt="선택" />
+              </CheckIcon>
+            )}
+          </ImageOption>
+          <ImageOption
+            image={background[3]}
+            onClick={() => handleImageChange(background[3])}
+            selected={selectImage === background[3]}
+          >
+            {selectImage === background[3] && (
+              <CheckIcon>
+                <img src="img/check.svg" alt="선택" />
+              </CheckIcon>
+            )}
+          </ImageOption>
+        </Select>
+      )}
+      <h2>
+        color:{selectColor}, img:{selectImage}
+      </h2>
+      <Button onClick={handleSubmit} disabled={btnDisable}>
+        생성하기
+      </Button>
     </PostSection>
   );
 }
@@ -45,9 +192,11 @@ const PostSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: left;
   background: var(--white);
-  margin-top: 57px;
+  margin: 57px auto;
+  width: 720px;
+  text-align: left;
 `;
 
 const PostInput = styled.div`
@@ -121,10 +270,9 @@ const SelectContent = styled.p`
   letter-spacing: -0.16px;
 `;
 
-const SelectToggle = styled.div`
-  display: flex;
+const SelectToggle = styled.span`
+  display: inline-flex;
   align-items: flex-start;
-  width: 720px;
   margin-top: 24px;
 `;
 
@@ -169,6 +317,56 @@ const OffButton = styled(BtnCommon)`
   letter-spacing: -0.16px;
 `;
 
+const Select = styled.div`
+  display: flex;
+  margin-top: 45px;
+  margin-bottom: 45px;
+`;
+
+const CheckIcon = styled.div`
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  border-radius: 100px;
+  background: var(--gray500);
+  align-items: center;
+  justify-content: center;
+`;
+
+const ColorOption = styled.div`
+  position: relative;
+  width: 168px;
+  height: 168px;
+  background-color: var(
+    --${(props) => (props.color === 'begie' ? 'orange' : props.color)}200
+  );
+  margin: 5px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+`;
+
+const ImageOption = styled.div`
+  position: relative;
+  width: 168px;
+  height: 168px;
+  background-image: url(${(props) => props.image})
+  );
+  background-size: cover;
+  margin: 5px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+
+  &:after {
+
+  }
+`;
+
 const Button = styled.button`
   display: flex;
   width: 720px;
@@ -178,7 +376,7 @@ const Button = styled.button`
   gap: 10px;
   margin: 24px;
   border-radius: 12px;
-  background: var(--purple600);
+  background: var(--${({ disabled }) => (disabled ? 'gray300' : 'purple600')});
 
   color: var(--white);
   text-align: center;
@@ -189,6 +387,8 @@ const Button = styled.button`
   font-weight: 700;
   line-height: 28px; /* 155.556% */
   letter-spacing: -0.18px;
+
+  cursor: ${({ disabled }) => disabled && 'not-allowed'};
 `;
 
 export default Post;
