@@ -16,11 +16,11 @@ function App() {
           </Route>
           <Route path="post">
             <Route index element={<Post />} />
-            {/* <Route path=":id" >
-              <Route index element={} />
+            <Route path=":id">
+              {/* <Route index element={} />
               <Route path='/edit' element={} />
-              <Route path='/message' element={} />
-            </Route> */}
+              <Route path='/message' element={} /> */}
+            </Route>
           </Route>
         </Route>
       </Routes>
