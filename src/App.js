@@ -1,11 +1,11 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import MainSection from './componenets/main/MainSection';
+import Main from './pages/Main';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<MainSection />} />
+        <Route path="/" element={<Main />} />
       </Routes>
     </BrowserRouter>
   );

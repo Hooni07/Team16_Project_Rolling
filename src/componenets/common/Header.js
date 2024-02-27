@@ -1,23 +1,28 @@
 import styled from 'styled-components';
-import logo from '../../assests/image/logo.png';
 
 const StyledNav = styled.nav`
   width: 100%;
   background: #fff;
   position: sticky;
+  border: 1px solid #ccc;
   top: 0;
   left: 0;
   right: 0;
 `;
 
 const StyledHeader = styled.div`
+  width: 100%
   height: 64px;
-  padding: 0 200px;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 11px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid #ccc;
+
+  @media (max-width: 1248px) {
+    padding: 11px 24px;
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -40,7 +45,7 @@ function Header() {
     <StyledNav>
       <StyledHeader>
         <a href="/">
-          <img className="logo" src={logo} alt="로고 사진" />
+          <img src="img/logo.png" alt="로고 사진" />
         </a>
         <ButtonContainer>
           <button type="button">롤링 페이퍼 만들기</button>
