@@ -40,16 +40,18 @@ const ButtonContainer = styled.div`
   }
 `;
 
-function Header() {
+function Header({ showButtom }) {
   return (
     <StyledNav>
       <StyledHeader>
         <a href="/">
           <img src="img/logo.png" alt="로고 사진" />
         </a>
-        <ButtonContainer>
-          <button type="button">롤링 페이퍼 만들기</button>
-        </ButtonContainer>
+        {showButtom && (
+          <ButtonContainer>
+            <button type="button">롤링 페이퍼 만들기</button>
+          </ButtonContainer>
+        )}
       </StyledHeader>
     </StyledNav>
   );
