@@ -10,7 +10,7 @@ async function getAPI(query) {
 
 function Post() {
   const [isColor, setIsColor] = useState(true);
-  const [selectColor, setSelectColor] = useState(null);
+  const [selectColor, setSelectColor] = useState('beige');
   const [background, setBackground] = useState([]);
   const [selectImage, setSelectImage] = useState(null);
   const [inputUser, setInputUser] = useState(null);
@@ -21,6 +21,7 @@ function Post() {
       const response = await getAPI('/background-images/');
       const result = response.imageUrls;
       setBackground(result);
+      setSelectImage(background[0]);
     } catch (error) {
       console.error(error);
     }
@@ -315,6 +316,7 @@ const OffButton = styled(BtnCommon)`
 `;
 
 const Select = styled.div`
+  width: 720px;
   display: flex;
   justify-content: space-between;
   margin-top: 45px;
@@ -350,18 +352,14 @@ const ColorOption = styled.div`
 
 const ImageOption = styled.div`
   position: relative;
+  background: url(${(props) => props.image}) lightgray 50% / cover no-repeat;
+  opacity: ${(props) => (props.selected ? '0.5' : '1')};
   width: 168px;
   height: 168px;
-  background: url(${(props) => props.image}) lightgray 50% / cover no-repeat;
-
   margin: 5px;
   border-radius: 16px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   cursor: pointer;
-
-  &:after {
-    background: lightgray 50%;
-  }
 `;
 
 const Button = styled.button`
