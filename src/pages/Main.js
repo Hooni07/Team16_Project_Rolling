@@ -1,5 +1,5 @@
-import Header from '../componenets/common/Header';
-import MainSection from '../componenets/main/MainSection';
+import Header from '../components/common/Header';
+import MainSection from '../components/main/MainSection';
 
 function Main() {
   return (
