@@ -4,7 +4,7 @@ import MainSection from '../components/main/MainSection';
 function Main() {
   return (
     <>
-      <Header showButtom />
+      <Header showButton />
       <MainSection />
     </>
   );
