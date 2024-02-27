@@ -10,7 +10,7 @@ async function getAPI(query) {
 
 function Post() {
   const [isColor, setIsColor] = useState(true);
-  const [selectColor, setSelectColor] = useState('beige');
+  const [selectColor, setSelectColor] = useState(null);
   const [background, setBackground] = useState([]);
   const [selectImage, setSelectImage] = useState(null);
   const [inputUser, setInputUser] = useState('');
@@ -44,6 +44,13 @@ function Post() {
 
   const toggleHandler = () => {
     setIsColor(!isColor);
+    if (isColor) {
+      setSelectImage(background[0]);
+      setSelectColor(null);
+    } else {
+      setSelectColor('beige');
+      setSelectImage(null);
+    }
   };
 
   const handleColorChange = (color) => {
