@@ -1,4 +1,4 @@
-import './assets/global.css'
+import './assets/global.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Main from './pages/Main';
 import Post from './pages/Post';
@@ -15,10 +15,10 @@ function App() {
           </Route>
           <Route path="post">
             <Route index element={<Post />} />
-            <Route path=":id" >
-              <Route index element={} />
+            <Route path=":id">
+              {/* <Route index element={} />
               <Route path='/edit' element={} />
-              <Route path='/message' element={} />
+              <Route path='/message' element={} /> */}
             </Route>
           </Route>
         </Route>

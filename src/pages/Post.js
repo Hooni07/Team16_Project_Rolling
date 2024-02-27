@@ -243,7 +243,7 @@ const Input = styled.input`
   border-radius: 8px;
   border: 1px solid var(--gray300);
   border: ${(props) => props.error && '2px solid var(--error)'};
-  backgournd: var(--white);
+  background: var(--white);
 
   &::placeholder {
     color: var(--gray500);
