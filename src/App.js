@@ -4,7 +4,6 @@ import Main from './pages/Main';
 import Post from './pages/Post';
 import List from './pages/List';
 
-
 function App() {
   return (
     <BrowserRouter>
@@ -27,5 +26,3 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;
