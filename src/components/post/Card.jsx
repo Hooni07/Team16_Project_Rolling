@@ -12,15 +12,22 @@ const userStateColors = {
 };
 export const CardContentWrapper = styled.div`
   position: relative;
-  width: 384px;
+  max-width: 384px;
+  width: 32%;
   height: 280px;
   justify-content: center;
   align-items: center;
-  flex-shrink: 0;
 
   border-radius: 16px;
   background: var(--white);
   box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.08);
+
+  @media (max-width: 1023px) {
+    width: 50%;
+  }
+  @media (max-width: 767px) {
+    width: 100%;
+  }
 `;
 
 const CardContent = styled.div`
@@ -60,6 +67,7 @@ const UserState = styled.div`
   ${Text}
   display: flex;
   padding: 1.5px 8px 0;
+  margin-top: 6px;
   width: 41px;
   height: 20px;
   text-align: center;
@@ -75,7 +83,7 @@ const UserState = styled.div`
 `;
 
 const SplitHorizontal = styled.div`
-  width: 336px;
+  width: 100%;
   height: 1px;
   background: var(--gray200);
   margin: 15px auto;
@@ -91,6 +99,8 @@ const CardContentText = styled.div`
   font-weight: 400;
   line-height: 28px;
   letter-spacing: -0.18px;
+
+  flex-wrap: wrap;
 `;
 
 const CardCreatedAt = styled.div`

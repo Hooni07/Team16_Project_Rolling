@@ -20,6 +20,8 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
+    'arrow-body-style': 'off',
+    'no-console': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/jsx-filename-extension': [1, { extensions: ['.js', 'jsx'] }],
     'react/prop-types': 'off',
@@ -28,5 +30,10 @@ module.exports = {
     'react/jsx-one-expression-per-line': 'off',
     camelcase: 'off',
     'import/no-extraneous-dependencies': 'off',
+    'no-multiple-empty-lines': 'off',
+    'implicit-arrow-linebreak': 'off',
+    'no-confusing-arrow': 'off',
+    'function-paren-newline': 'off',
+    'object-curly-newline': 'off',
   },
 };

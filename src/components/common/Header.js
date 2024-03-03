@@ -1,27 +1,26 @@
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const StyledNav = styled.nav`
   width: 100%;
   background: #fff;
   position: sticky;
-  border: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
   top: 0;
   left: 0;
   right: 0;
 `;
 
 const StyledHeader = styled.div`
-  width: 100%
-  height: 64px;
+  max-height: 64px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 11px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  @media (max-width: 1248px) {
-    padding: 11px 24px;
+  padding: 11px 0px;
+  @media (max-width: 1247px) {
+    margin: 0 24px;
   }
 `;
 
@@ -39,18 +38,38 @@ const ButtonContainer = styled.div`
     text-align: center;
   }
 `;
+const LogoURL = styled.a`
+  display: flex;
+  padding: 6px 0;
+  gap: 8px;
+  align-items: center;
+`;
+const LogoText = styled.div`
+  color: var(--gray-light-gray-90, #4a494f);
+  /* text-align: center; */
+
+  /* padding-top: 3px; */
+  /* font-family: Poppins; */
+  font-size: 19.971px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+`;
 
 function Header({ showButton }) {
   return (
     <StyledNav>
       <StyledHeader>
-        <a href="/">
-          <img src="img/logo.png" alt="로고 사진" />
-        </a>
+        <LogoURL href="/">
+          <img src="img/logo.svg" alt="로고 사진" />
+          <LogoText>Rolling</LogoText>
+        </LogoURL>
         {showButton && (
-          <ButtonContainer>
-            <button type="button">롤링 페이퍼 만들기</button>
-          </ButtonContainer>
+          <Link to="/post">
+            <ButtonContainer>
+              <button type="button">롤링 페이퍼 만들기</button>
+            </ButtonContainer>
+          </Link>
         )}
       </StyledHeader>
     </StyledNav>
