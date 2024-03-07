@@ -1,24 +1,19 @@
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-function PostButton({ onSubmit, btnDisable }) {
+function EditButton() {
   const navigate = useNavigate();
-
-  const handleButtonClick = async () => {
-    const recipientId = await onSubmit();
-    navigate(`/post/${recipientId}`);
-  };
+  const { id: recipientID } = useParams();
 
   return (
-    <Button onClick={handleButtonClick} disabled={btnDisable}>
-      생성하기
+    <Button onClick={() => navigate(`/post/${recipientID}/edit`)}>
+      수정하기
     </Button>
   );
 }
 
 const Button = styled.button`
   display: flex;
-  width: 720px;
   padding: 14px 24px;
   justify-content: center;
   align-items: center;
@@ -43,4 +38,4 @@ const Button = styled.button`
   }
 `;
 
-export default PostButton;
+export default EditButton;

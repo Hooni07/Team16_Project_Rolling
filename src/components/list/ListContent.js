@@ -1,12 +1,12 @@
 import styled from 'styled-components';
-import RecipientList from './RecipientList';
+import RecipientCardList from './RecipientCardList';
 
 function ListContent({ title }) {
   return (
     <Section>
       <SectionContainer>
         <Title>{title}</Title>
-        <RecipientList />
+        <RecipientCardList />
       </SectionContainer>
     </Section>
   );
@@ -17,7 +17,7 @@ export default ListContent;
 const Section = styled.section`
   display: flex;
   width: 100%;
-  max-width: calc(100% - 720px);
+  max-width: 1180px;
   margin: 0 auto;
   margin-top: 50px;
 

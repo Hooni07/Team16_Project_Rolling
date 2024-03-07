@@ -1,4 +1,8 @@
 import styled, { css } from 'styled-components';
+import { useRef, useEffect, useState } from 'react';
+import DeleteMessageButton from '../common/Buttons/DeleteMessageButton';
+import ModalPortal from '../modal/ModalPortal';
+import CardModal from '../modal/CardModal';
 
 const Text = css`
   font-family: Pretendard;
@@ -21,6 +25,8 @@ export const CardContentWrapper = styled.div`
   border-radius: 16px;
   background: var(--white);
   box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.08);
+
+  cursor: pointer;
 
   @media (max-width: 1023px) {
     width: 50%;
@@ -53,7 +59,8 @@ const UserPicture = styled.img`
 const UserText = styled.div`
   ${Text}
   display: block;
-  color: #000;
+  position: relative;
+  color: var(--black);
   font-size: 20px;
   font-weight: 400;
   line-height: 24px;
@@ -64,7 +71,6 @@ const UserName = styled.span`
 `;
 
 const UserState = styled.div`
-  ${Text}
   display: flex;
   padding: 1.5px 8px 0;
   margin-top: 6px;
@@ -74,8 +80,13 @@ const UserState = styled.div`
   align-items: center;
 
   border-radius: 4px;
-  background: ${({ state }) => userStateColors[state].background};
-  color: ${({ state }) => userStateColors[state].color};
+  background: ${({ $state }) =>
+    userStateColors[$state]
+      ? userStateColors[$state].background
+      : 'defaultColor'};
+  color: ${({ $state }) =>
+    userStateColors[$state] ? userStateColors[$state].color : 'defaultColor'};
+
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
@@ -89,11 +100,22 @@ const SplitHorizontal = styled.div`
   margin: 15px auto;
 `;
 
+const CardContentTextContainer = styled.div`
+  height: 112px;
+  width: 312px;
+`;
+
 const CardContentText = styled.div`
-  ${Text}
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow-wrap: break-word;
   overflow: hidden;
-  color: var(--gray600);
   text-overflow: ellipsis;
+  color: var(--gray600);
+  width: 100%;
+  /* max-height: 112px; */
+  /* max-width: 312px; */
 
   font-size: 18px;
   font-weight: 400;
@@ -117,26 +139,86 @@ const CardCreatedAt = styled.div`
 `;
 
 function Card({
-  src = 'img/shareIcon.svg',
-  name = '김동훈',
+  id,
+  src,
+  name,
+  cardFont,
   userState = '친구',
   cardContent = '코로나가 또다시 기승을 부리는 요즘이네요. 건강, 체력 모두 조심 또 조심하세요!',
   cardCreatedAt = '2023.07.08',
+  onDelete,
 }) {
+  const [isCardOpen, setIsCardOpen] = useState(false);
+  const ref = useRef();
+
+  const handleOutsideClick = (e) => {
+    if (isCardOpen && (!ref.current || !ref.current.contains(e.target))) {
+      setIsCardOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('click', handleOutsideClick);
+    return () => {
+      window.removeEventListener('click', handleOutsideClick);
+    };
+  }, [isCardOpen]);
+
+  const handleClickCard = (e) => {
+    e.preventDefault();
+    setIsCardOpen(!isCardOpen);
+  };
+
+  const createdDays = new Date(cardCreatedAt);
+
+  const fontClass = {
+    'Noto Sans': 'noto-sans',
+    Pretendard: 'pretendard',
+    나눔명조: 'nanum-gothic',
+    '나눔손글씨 손편지체': 'nanum-myeongjo',
+  };
+
+  const font = fontClass[cardFont] || '';
+
   return (
-    <CardContentWrapper>
+    <CardContentWrapper ref={ref} onClick={handleClickCard}>
       <CardContent>
         <UserInfo>
-          <UserPicture src={src} alt="" />
+          <UserPicture src={src} alt="프로필" />
           <UserText>
             From. <UserName>{name}</UserName>
-            <UserState state={userState}>{userState}</UserState>
+            <UserState $state={userState}>{userState}</UserState>
           </UserText>
+          <DeleteMessageButton id={id} onDelete={onDelete} />
         </UserInfo>
         <SplitHorizontal />
-        <CardContentText>{cardContent}</CardContentText>
-        <CardCreatedAt>{cardCreatedAt}</CardCreatedAt>
+        <CardContentTextContainer>
+          <CardContentText
+            dangerouslySetInnerHTML={{ __html: cardContent }}
+            className={font}
+          />
+        </CardContentTextContainer>
+
+        <CardCreatedAt>
+          {`${createdDays.getFullYear()}. ${
+            createdDays.getMonth() + 1
+          }. ${createdDays.getDate()}`}
+        </CardCreatedAt>
       </CardContent>
+      {isCardOpen && (
+        <ModalPortal>
+          <CardModal
+            onClick={(e) => handleOutsideClick(e)}
+            id={id}
+            src={src}
+            name={name}
+            cardFont={cardFont}
+            userState={userState}
+            cardContent={cardContent}
+            cardCreatedAt={cardCreatedAt}
+          />
+        </ModalPortal>
+      )}
     </CardContentWrapper>
   );
 }

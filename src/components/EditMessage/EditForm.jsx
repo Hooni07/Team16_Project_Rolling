@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import styled from 'styled-components';
-import EditorBox from './TextEditor';
+import EditorBox from '../WritingMessage/TextEditor';
 import Dropdown from '../common/Dropdown';
-import { getProfile } from '../../api/GetApi';
+import { getMessage, getProfile } from '../../api/GetApi';
 // import Button from './Button';
-import PostButton from '../common/Buttons/PostButton';
-import { submitMessagePost } from '../../api/PostApi';
+import PutPatchButton from '../common/Buttons/PutPatchButton';
+import { patchMessage, putMessage } from '../../api/PutPatchApi';
 
 const FormPage = styled.div`
   max-width: 720px;
@@ -62,7 +62,8 @@ const InputText = styled.input`
   align-items: center;
   gap: 10px;
   border-radius: 8px;
-  border: 1px solid ${(props) => (props.isError ? 'var(--error)' : 'var(--gray300)')};
+  border: 1px solid
+    ${(props) => (props.isError ? 'var(--error)' : 'var(--gray300)')};
   background: var(--white);
 
   @media (max-width: 767px) {
@@ -118,26 +119,6 @@ const ImageSelectDirection = styled.p`
   letter-spacing: -0.16px;
 `;
 
-// const RelationSelect = styled.select`
-//   display: flex;
-//   width: 320px;
-//   height: 50px;
-//   padding: 12px 16px;
-//   justify-content: space-between;
-//   align-items: center;
-//   border-radius: 8px;
-//   border: 1px solid var(--gray300);
-// `;
-
-// const TextAreaDevice = styled.div`
-//   display: flex;
-//   max-width: 720px;
-//   height: 260px;
-//   padding: 16px 1px 16px 1px;
-//   justify-content: center;
-//   align-items: center;
-// `;
-
 const ProfileImageContainer = styled.div`
   flex-wrap: wrap;
   max-width: 560px;
@@ -159,7 +140,7 @@ const ProfileImage = styled.img`
   }
 `;
 
-function WritingForm({ isBtnDisabled }) {
+function EditForm({ isBtnDisabled }) {
   // const imageList = ['img/image43.svg', 'img/image44.svg'];
   const nonProfileImage = ['/img/nonSelected.svg'];
   const [name, setName] = useState('');
@@ -170,7 +151,15 @@ function WritingForm({ isBtnDisabled }) {
   const [contents, setContents] = useState('');
   const [isContent, setIsContent] = useState(true);
   const [profileImages, setProfileImages] = useState([]);
+  const [originalData, setOriginalData] = useState({
+    sender: '',
+    profileImageURL: '',
+    relationship: '',
+    content: '',
+    font: '',
+  });
   const { id: recipientID } = useParams();
+  const { messageid } = useParams();
 
   const handleNameChange = (e) => {
     setName(e.target.value);
@@ -185,14 +174,6 @@ function WritingForm({ isBtnDisabled }) {
     setProfile(prof);
   };
 
-  // const handleButtonClick = (imageUrl) => {
-  //   handleProfileSelect(imageUrl);
-  // };
-
-  // const handleRelationshipSelect = (relation) => {
-  //   setRelationship(relation);
-  // };
-
   const handleFontChange = (font) => {
     setFonts(font);
   };
@@ -200,6 +181,33 @@ function WritingForm({ isBtnDisabled }) {
   const handleSubmit = (e) => {
     e.preventDefault();
   };
+
+  // 수정 전 기존 데이터 선언
+  useEffect(() => {
+    const fetchMessage = async () => {
+      try {
+        const response = await getMessage(messageid);
+        const message = response;
+
+        setName(message.sender);
+        setProfile(message.profileImageURL);
+        setRelation(message.relationship);
+        setContents(message.content);
+        setFonts(message.font);
+        setOriginalData({
+          sender: message.sender,
+          profileImageURL: message.profileImageURL,
+          relationship: message.relationship,
+          content: message.content,
+          font: message.font,
+        });
+      } catch (error) {
+        throw new Error('데이터를 불러오지 못했습니다.', error);
+      }
+    };
+
+    fetchMessage();
+  }, [messageid]);
 
   useEffect(() => {
     const handleImageLoad = async () => {
@@ -276,40 +284,55 @@ function WritingForm({ isBtnDisabled }) {
           <Dropdown
             $state="0"
             options={['지인', '친구', '동료', '가족']}
-            placeholder="지인"
+            placeholder={relation}
             onChange={(selectedOption) => setRelation(selectedOption)}
           />
         </FormSubject>
 
         <FormSubject>
           <IndexMessage>내용을 입력해 주세요</IndexMessage>
-          {/* <TextAreaDevice> */}
-          <EditorBox onContentChange={handleContentChange} />
-          {/* </TextAreaDevice> */}
+          <EditorBox content={contents} onContentChange={handleContentChange} />
         </FormSubject>
 
         <FormSubject>
           <IndexMessage>폰트 선택</IndexMessage>
           <Dropdown
             $state="1"
-            options={['Noto Sans', 'Pretendard', '나눔명조', '나눔손글씨 손편지체']}
-            placeholder="Noto Sans"
+            options={[
+              'Noto Sans',
+              'Pretendard',
+              '나눔명조',
+              '나눔손글씨 손편지체',
+            ]}
+            placeholder={fonts}
             onChange={(selectedOption) => handleFontChange(selectedOption)}
           />
         </FormSubject>
-        <PostButton
+        <PutPatchButton
           onSubmit={async () => {
             const data = {
-              team: '16',
-              recipientId: Number(recipientID),
+              team: '4-16',
+              recipientId: recipientID,
               sender: name,
               profileImageURL: profile,
               relationship: relation,
               content: contents,
               font: fonts,
             };
-            console.log(data);
-            const response = await submitMessagePost(recipientID, data);
+
+            if (
+              originalData.sender !== data.sender &&
+              originalData.profileImageURL !== data.profileImageURL &&
+              originalData.relationship !== data.relationship &&
+              originalData.content !== data.content &&
+              originalData.font !== data.font
+            ) {
+              // 모든 데이터 변경에 의한 PUT Request
+              const response = await putMessage(messageid, data);
+              return response.recipientId;
+            }
+            // 일부 데이터 변경에 의한 PATCH Request
+            const response = await patchMessage(messageid, data);
             return response.recipientId;
           }}
           btnDisable={!isContent}
@@ -319,4 +342,4 @@ function WritingForm({ isBtnDisabled }) {
   );
 }
 
-export default WritingForm;
+export default EditForm;

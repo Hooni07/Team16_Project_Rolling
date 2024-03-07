@@ -1,9 +1,9 @@
 import { deleteData } from './DataMethodApi';
 
-export function deleteMessages(id) {
-  return deleteData(`/messages/${id}`);
+export function deleteMessages(MessageID) {
+  return deleteData(`/messages/${MessageID}/`);
 }
 
-export function deleteRecipient(id) {
-  return deleteData(`/recipients/${id}`);
+export function deleteRecipient(recipientID) {
+  return deleteData(`/recipients/${recipientID}/`);
 }

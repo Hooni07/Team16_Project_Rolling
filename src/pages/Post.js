@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import Header from '../components/common/Header';
 import SelectSection from '../components/post/postmake/SelectSection';
-import PostButton from '../components/post/postmake/PostButton';
+import PostButton from '../components/common/Buttons/PostButton';
 import PostInputSection from '../components/post/postmake/PostInputSection';
 import ColorSelection from '../components/post/postmake/ColorSelection';
 import ImageSelection from '../components/post/postmake/ImageSelection';
@@ -28,7 +28,7 @@ function Post() {
         const result = response.imageUrls;
         setBackground(result);
       } catch (error) {
-        // console.error(error);
+        throw new Error('이미지를 불러오지 못했습니다.', error);
       }
     };
     handleImageLoad();
@@ -85,8 +85,9 @@ function Post() {
         />
         {isColor ? (
           <Select>
-            {colorList.map((color) => (
+            {colorList.map((color, index) => (
               <ColorSelection
+                key={`${color}${index + 1}`}
                 color={color}
                 handleFunction={() => handleColorChange(color)}
                 checkSelected={selectColor === color}
@@ -95,8 +96,9 @@ function Post() {
           </Select>
         ) : (
           <Select>
-            {background.map((image) => (
+            {background.map((image, index) => (
               <ImageSelection
+                key={`${image}${index + 1}`}
                 image={image}
                 handleFunction={() => handleImageChange(image)}
                 checkSelected={selectImage === image}

@@ -11,7 +11,7 @@ function ImageSelection({ image, handleFunction, checkSelected }) {
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </ImageWrapper>
-      {checkSelected && <CheckIcon imgSrc="img/check.svg" />}
+      {checkSelected && <CheckIcon imgSrc="/img/check.svg" />}
     </ImageOption>
   );
 }

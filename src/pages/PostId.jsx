@@ -1,13 +1,14 @@
 import styled from 'styled-components';
-// eslint-disable-next-line
-import { Link, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Header from '../components/common/Header';
 import SubHeader from '../components/post/SubHeader';
-import Card, { CardContentWrapper } from '../components/post/Card';
-import { getRecipientData } from '../api/GetApi';
+import { CardContentWrapper } from '../components/post/Card';
+import { getAllMessages, getRecipientData } from '../api/GetApi';
+import EditButton from '../components/common/Buttons/EditButton';
+import CardItems from '../components/post/card/CardItems';
 
-const HeaderWrapper = styled.div`
+export const HeaderWrapper = styled.div`
   position: sticky;
   top: 0;
   left: 0;
@@ -18,21 +19,42 @@ const HeaderWrapper = styled.div`
   }
 `;
 
-const PostIdWrapper = styled.div`
-  background-color: ${(props) => props.color || 'var(--orange200)'};
-  background-image: url(${(props) => props.image || 'none'});
+const userBackgroundColors = {
+  beige: { background: 'var(--orange200)' },
+  purple: { background: 'var(--purple200)' },
+  green: { background: 'var(--green200)' },
+  blue: { background: 'var(--blue200)' },
+};
+
+export const PostIdWrapper = styled.div`
+  background-color: ${(props) => {
+    const colorInfo = userBackgroundColors[props.color];
+    return colorInfo && colorInfo.background;
+  }};
+  background-image: url(${(props) => props.$image || 'none'});
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   min-height: 100vh;
 `;
+
+export const ButtonSection = styled.div`
+  display: flex;
+  margin: 63px auto 11px;
+  max-width: 1200px;
+  gap: 10px;
+  justify-content: end;
+  align-items: center;
+`;
+
 // eslint-disable-next-line
-const CardWrapper = styled.div`
+export const CardWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   max-width: 1200px;
-  margin: 127px auto 0px;
+  margin: 0px auto 0px;
+  padding-bottom: 127px;
   gap: 24px 2%;
 
   @media (max-width: 1247px) {
@@ -62,9 +84,12 @@ const PlusIcon = styled.div`
   background: var(--gray500);
 `;
 
-function PostId({ peopleNum }) {
+function PostId() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [data, setData] = useState({});
+  const [messages, setMessages] = useState(null);
+
   const handleIdData = async () => {
     try {
       const result = await getRecipientData(id);
@@ -74,71 +99,42 @@ function PostId({ peopleNum }) {
     }
   };
 
+  const handleMessages = async () => {
+    try {
+      const result = await getAllMessages(id);
+      setMessages(result.results);
+    } catch (error) {
+      // console.error(error);
+    }
+  };
+
   useEffect(() => {
     handleIdData();
+    handleMessages(id);
   }, []);
 
   return (
-    <PostIdWrapper color={data.backgroundColor} image={data.backgroundImageURL}>
+    <PostIdWrapper
+      color={data.backgroundColor}
+      $image={data.backgroundImageURL}
+    >
       <HeaderWrapper>
         <Header />
       </HeaderWrapper>
-      <SubHeader name={data ? data.name : 'hello'} peopleNum={peopleNum || 2} />
+      <SubHeader
+        name={data ? data.name : 'hello'}
+        peopleNum={data ? data.messageCount : 0}
+      />
+      <ButtonSection>
+        <EditButton />
+      </ButtonSection>
       <CardWrapper>
-        <CardAdd>
+        <CardAdd onClick={() => navigate(`/post/${data.id}/message`)}>
           <PlusIcon>
-            <img src="img/plusIcon.svg" alt="" />
+            <img src="/img/plusIcon.svg" alt="" />
           </PlusIcon>
         </CardAdd>
-        <Card
-          src="img/shareIcon.svg"
-          name="김동훈"
-          userState="친구"
-          cardContent="코로나가 또다시 기승을 부리는 요즘이네요. 건강, 체력 모두 조심 또 조심하세요!"
-          cardCreatedAt="2023.07.08"
-        />
-        <Card
-          src="img/shareIcon.svg"
-          name="김동훈"
-          userState="동료"
-          cardContent="코로나가 또다시 기승을 부리는 요즘이네요. 건강, 체력 모두 조심 또 조심하세요!"
-          cardCreatedAt="2023.07.08"
-        />
-        <Card
-          src="img/shareIcon.svg"
-          name="김동훈"
-          userState="가족"
-          cardContent="코로나가 또다시 기승을 부리는 요즘이네요. 건강, 체력 모두 조심 또 조심하세요!"
-          cardCreatedAt="2023.07.08"
-        />
-        <Card
-          src="img/shareIcon.svg"
-          name="김동훈"
-          userState="지인"
-          cardContent="코로나가 또다시 기승을 부리는 요즘이네요. 건강, 체력 모두 조심 또 조심하세요!"
-          cardCreatedAt="2023.07.08"
-        />
-        <Card
-          src="img/shareIcon.svg"
-          name="김동훈"
-          userState="지인"
-          cardContent="코로나가 또다시 기승을 부리는 요즘이네요. 건강, 체력 모두 조심 또 조심하세요!"
-          cardCreatedAt="2023.07.08"
-        />
-        <Card
-          src="img/shareIcon.svg"
-          name="김동훈"
-          userState="지인"
-          cardContent="코로나가 또다시 기승을 부리는 요즘이네요. 건강, 체력 모두 조심 또 조심하세요!"
-          cardCreatedAt="2023.07.08"
-        />
-        <Card
-          src="img/shareIcon.svg"
-          name="김동훈"
-          userState="지인"
-          cardContent="코로나가 또다시 기승을 부리는 요즘이네요. 건강, 체력 모두 조심 또 조심하세요!"
-          cardCreatedAt="2023.07.08"
-        />
+        <CardItems messages={messages} />
       </CardWrapper>
     </PostIdWrapper>
   );

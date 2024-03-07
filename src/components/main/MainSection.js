@@ -157,10 +157,10 @@ function MainSection() {
             </h2>
             <p>로그인 없이 자유롭게 만들어요.</p>
           </ArticleContainer>
-          <img src="img/img_01.png" alt="롤링페이퍼 예시 사진" />
+          <img src="/img/img_01.png" alt="롤링페이퍼 예시 사진" />
         </FirstSectionContainer>
         <SecondSectionContainer>
-          <img src="img/img_02.png" alt="이모지 예시 사진" />
+          <img src="/img/img_02.png" alt="이모지 예시 사진" />
           <ArticleContainer>
             <StyledPointBtn>Point. 02</StyledPointBtn>
             <h2>

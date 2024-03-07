@@ -1,7 +1,11 @@
 import styled, { css } from 'styled-components';
 import { useState, useRef, useEffect } from 'react';
+import { ToastContainer } from 'react-toastify';
 import EmojiDropDown from './subheader/EmojiDropDown';
-import ShareModal from './ShareModal';
+import ShareToggle from '../modal/ShareToggle';
+import KakaoModal from '../modal/KakaoModal';
+import ModalPortal from '../modal/ModalPortal';
+import Toast from '../common/Toast';
 
 const Text = css`
   font-family: Pretendard;
@@ -91,6 +95,7 @@ const SplitBarHorizontal = styled.div`
 const PostIdSetting = styled.div`
   display: flex;
   align-items: center;
+  position: relative;
 
   @media (max-width: 767px) {
     margin-left: 24px;
@@ -149,13 +154,37 @@ const ShareButton = styled.button`
 
 const ShareWrapper = styled.div`
   position: absolute;
-  top: 60px;
-  right: 120px;
+  top: 45px;
+  right: 2px;
   z-index: 9999;
 `;
 
-function SubHeader({ name = 'Minjoon', peopleNum = 23 }) {
+const Container = styled(ToastContainer)`
+  .Toastify__toast {
+    font-size: 16px;
+    padding: 19px 30px;
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    width: 524px;
+    margin: 0 auto;
+    right: 33%;
+  }
+
+  .Toastify__toast-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .Toastify__toast--success {
+    background: #000;
+  }
+`;
+
+function SubHeader({ name, peopleNum }) {
   const [shareToggle, setShareToggle] = useState(false);
+  const [isKakaoOpen, setIsKakaoOpen] = useState(false);
+  const [isUrlCopy, setIsUrlCopy] = useState(false);
   const ref = useRef();
 
   const handleOutsideClick = (e) => {
@@ -190,12 +219,26 @@ function SubHeader({ name = 'Minjoon', peopleNum = 23 }) {
           <EmojiDropDown />
           <SplitBarVertical2 />
           <ShareButton ref={ref} onClick={handleClickShare}>
-            <img src="img/shareIcon.svg" alt="" />
+            <img src="/img/shareIcon.svg" alt="" />
           </ShareButton>
           {shareToggle && (
             <ShareWrapper>
-              <ShareModal />
+              <ShareToggle
+                setIsKakaoOpen={setIsKakaoOpen}
+                setIsUrlCopy={setIsUrlCopy}
+              />
             </ShareWrapper>
+          )}
+          {isKakaoOpen && (
+            <ModalPortal>
+              <KakaoModal />
+            </ModalPortal>
+          )}
+          {isUrlCopy && (
+            <ModalPortal>
+              <Container limit={1} />
+              <Toast />
+            </ModalPortal>
           )}
         </PostIdSetting>
       </SubHeaderContainer>

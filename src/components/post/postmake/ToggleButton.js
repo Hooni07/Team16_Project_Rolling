@@ -1,20 +1,15 @@
 import styled from 'styled-components';
 
-function ToggleButton({
-  state,
-  handler,
-  text1,
-  text2,
-}) {
+function ToggleButton({ state, handler, text1, text2 }) {
   return state ? (
     <SelectToggle onClick={handler}>
-      <OnButton>{text1}</OnButton>
+      <OnButton disabled>{text1}</OnButton>
       <OffButton>{text2}</OffButton>
     </SelectToggle>
   ) : (
     <SelectToggle onClick={handler}>
       <OffButton>{text1}</OffButton>
-      <OnButton>{text2}</OnButton>
+      <OnButton disabled>{text2}</OnButton>
     </SelectToggle>
   );
 }
@@ -49,6 +44,7 @@ const OnButton = styled(BtnCommon)`
   font-weight: 700;
   line-height: 26px; /* 162.5% */
   letter-spacing: -0.16px;
+  cursor: default;
 `;
 
 const OffButton = styled(BtnCommon)`

@@ -21,7 +21,7 @@ export default List;
 
 const ButtonContainer = styled.div`
   display: flex;
-  padding: 24px 0;
+  margin-top: 40px;
   align-items: center;
   justify-content: center;
 
